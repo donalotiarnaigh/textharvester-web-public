@@ -1,0 +1,108 @@
+{
+  "name": "hg_textharvest_v2",
+  "version": "1.0.0",
+  "description": "Text extraction tool by Curlew Geospatial",
+  "main": "index.js",
+  "bin": {
+    "th": "./bin/textharvester"
+  },
+  "scripts": {
+    "test": "jest --config jest.config.cjs",
+    "coverage": "jest --config jest.config.cjs --coverage",
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "local-start": "NODE_ENV=development nodemon server.js --ignore 'data/*' --ignore 'uploads/*'",
+    "lint": "eslint .",
+    "migrate:remove-confidence-score": "node scripts/remove-confidence-score.js",
+    "migrate:add-model-columns": "node scripts/migrate-add-model-columns.js",
+    "migrate:add-source-type": "node scripts/migrate-add-source-type.js",
+    "init-db": "node scripts/init-db.js",
+    "th": "node bin/textharvester",
+    "th:ingest": "node bin/textharvester ingest",
+    "th:query": "node bin/textharvester query",
+    "th:help": "node bin/textharvester --help",
+    "eval": "node eval/scripts/score.js",
+    "eval:check": "node eval/scripts/score.js --check --floor 0.85",
+    "eval:synthetic": "node eval/scripts/score.js --dir eval/fixtures/synthetic",
+    "eval:export": "node eval/scripts/export-for-annotation.js",
+    "verify:migrations": "node scripts/verify-migration-transactions.js",
+    "test:audit-e2e": "node scripts/test-audit-logging-e2e.js",
+    "test:e2e": "node scripts/e2e-test.js",
+    "test:e2e-upload": "node scripts/e2e-test-upload.js"
+  },
+  "keywords": [
+    "ocr",
+    "heritage",
+    "genealogy",
+    "text-extraction",
+    "handwriting-recognition",
+    "burial-records",
+    "memorials",
+    "graveyard",
+    "archival",
+    "cli"
+  ],
+  "author": "Daniel Tierney",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/donalotiarnaigh/textharvester-web-public.git"
+  },
+  "homepage": "https://github.com/donalotiarnaigh/textharvester-web-public#readme",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.128.0",
+    "@google/generative-ai": "^0.24.1",
+    "@mistralai/mistralai": "^2.7.0",
+    "ajv": "^8.20.0",
+    "axios": "^1.8.2",
+    "chalk": "^4.1.2",
+    "cli-progress": "^3.12.0",
+    "commander": "^14.0.2",
+    "compression": "^1.8.2",
+    "cors": "^2.8.6",
+    "dotenv": "^16.3.1",
+    "dropzone": "^6.3.4",
+    "express": "^4.22.3",
+    "form-data": "^4.0.2",
+    "glob": "^8.1.0",
+    "helmet": "^7.1.0",
+    "moment": "^2.31.0",
+    "morgan": "^1.10.0",
+    "multer": "^2.0.1",
+    "open": "^10.1.2",
+    "openai": "^4.24.0",
+    "pdf-poppler": "^0.2.3",
+    "sharp": "^0.35.4",
+    "sqlite3": "^6.0.1",
+    "winston": "^3.19.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.27.1",
+    "@babel/plugin-transform-modules-commonjs": "^7.27.1",
+    "@babel/preset-env": "^7.27.2",
+    "@eslint/js": "^9.3.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "babel-jest": "^29.7.0",
+    "eslint": "^9.3.0",
+    "eslint-plugin-jest": "^28.5.0",
+    "globals": "^15.3.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "jest-junit": "^17.0.0",
+    "node-mocks-http": "^1.17.2",
+    "nodemon": "^3.1.0",
+    "supertest": "^7.1.1"
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "npm": ">=10.0.0"
+  },
+  "overrides": {
+    "prebuild-install": {
+      "tar-fs": "2.1.4"
+    }
+  },
+  "allowScripts": {
+    "sqlite3": true
+  }
+}

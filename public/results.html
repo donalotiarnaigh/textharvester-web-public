@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Text Harvester Results</title>
+  <!-- Include Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+
+
+  <!-- Include Font Awesome CSS for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+  <!-- Custom CSS styling -->
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="index.html">
+      <img src="/images/logo.png" alt="Curlew TextHarvester Logo" style="height: 50px; margin-right: 10px" />
+      Curlew TextHarvester
+    </a>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="projects.html">Projects</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="schemas.html">Schemas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="index.html">Back to Home</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="content-wrap">
+    <div class="container">
+      <h1 class="mt-4">Results</h1>
+
+      <!-- Project Filter -->
+      <div class="card mb-3" id="projectFilterCard" style="display: none;">
+        <div class="card-body py-3">
+          <div class="form-group mb-0">
+            <label for="projectFilter">Filter by Project</label>
+            <select class="form-control" id="projectFilter">
+              <option value="">All Projects</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Source Type Banner (Hidden by default, shown for custom schemas) -->
+      <div id="sourceBanner" class="alert alert-info d-none mb-3">
+        <i class="fas fa-database mr-2"></i>
+        <span id="sourceBannerText">Viewing: Custom Schema</span>
+      </div>
+
+      <p class="info-message"></p>
+
+      <!-- Error Summary Section -->
+      <div id="errorSummary" class="card mb-4 border-warning" style="display: none;">
+        <div class="card-header bg-warning text-dark">
+          <h5 class="mb-0">Processing Notices</h5>
+        </div>
+        <div class="card-body">
+          <p>The following files could not be processed successfully:</p>
+          <ul id="errorList" class="list-group"></ul>
+        </div>
+      </div>
+
+      <!-- Model Info Panel -->
+      <div class="model-info-panel card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">
+            <button class="btn btn-link" data-toggle="collapse" data-target="#modelInfoContent">
+              Model & Prompt Information
+            </button>
+          </h5>
+          <button class="btn btn-sm btn-outline-secondary copy-info" data-clipboard-target="#modelInfoContent">
+            <i class="fas fa-copy"></i> Copy
+          </button>
+        </div>
+        <div id="modelInfoContent" class="collapse">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="model-details">
+                  <h6>Model Information</h6>
+                  <p><strong>Provider:</strong> <span id="infoProvider"></span></p>
+                  <p><strong>Version:</strong> <span id="infoModelVersion"></span></p>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="prompt-details">
+                  <h6>Prompt Information</h6>
+                  <p><strong>Template:</strong> <span id="infoTemplate"></span></p>
+                  <p><strong>Version:</strong> <span id="infoPromptVersion"></span></p>
+                  <p><strong>Last Updated:</strong> <span id="infoProcessedDate"></span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Summary Statistics (Hidden by default, shown for grave cards) -->
+      <div id="summaryStatsRow" class="row mb-3 d-none">
+        <div class="col-md-3 col-sm-6 mb-2">
+          <div class="card text-center bg-light border-primary">
+            <div class="card-body py-2">
+              <h6 class="card-title mb-0 text-primary">Total Cards</h6>
+              <p class="card-text h3 font-weight-bold" id="statTotalCards">0</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-2">
+          <div class="card text-center bg-light border-success">
+            <div class="card-body py-2">
+              <h6 class="card-title mb-0 text-success">Interments</h6>
+              <p class="card-text h3 font-weight-bold" id="statTotalInterments">0</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-2">
+          <div class="card text-center bg-light border-warning">
+            <div class="card-body py-2">
+              <h6 class="card-title mb-0 text-warning">Occupied</h6>
+              <p class="card-text h3 font-weight-bold" id="statOccupied">0</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-2">
+          <div class="card text-center bg-light border-secondary">
+            <div class="card-body py-2">
+              <h6 class="card-title mb-0 text-secondary">Vacant</h6>
+              <p class="card-text h3 font-weight-bold" id="statVacant">0</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter and Search Controls -->
+      <div class="filter-controls card mb-3">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="searchInput">Search:</label>
+                <input type="text" class="form-control" id="searchInput"
+                  placeholder="Search names, memorial numbers...">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="sectionFilter">Filter by Section:</label>
+                <select class="form-control" id="sectionFilter">
+                  <option value="">All Sections</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="yearFilter">Filter by Year:</label>
+                <select class="form-control" id="yearFilter">
+                  <option value="">All Years</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>&nbsp;</label>
+                <button class="btn btn-secondary btn-block" id="clearFilters">
+                  <i class="fas fa-times"></i> Clear
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- Advanced filters for models (collapsed by default or integrated) -->
+          <div class="row mt-2">
+            <div class="col-md-3">
+              <div class="form-group mb-0">
+                <label for="modelFilter" class="small text-muted">Filter by Model:</label>
+                <select class="form-control form-control-sm" id="modelFilter">
+                  <option value="">All Models</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group mb-0">
+                <label for="siteCodeFilter" class="small text-muted">Filter by Site Code:</label>
+                <select class="form-control form-control-sm" id="siteCodeFilter">
+                  <option value="">All Sites</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group mb-0">
+                <label for="graveNumberInput" class="small text-muted">Grave Number:</label>
+                <input type="text" class="form-control form-control-sm" id="graveNumberInput" placeholder="Exact #">
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-12">
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted">
+                  Showing <span id="visibleCount">0</span> of <span id="totalCount">0</span> records
+                </span>
+                <div class="btn-group btn-group-sm" role="group">
+                  <button class="btn btn-outline-secondary" id="expandAll">
+                    <i class="fas fa-expand-alt"></i> Expand All
+                  </button>
+                  <button class="btn btn-outline-secondary" id="collapseAll">
+                    <i class="fas fa-compress-alt"></i> Collapse All
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-responsive mt-4">
+        <table class="table table-hover" id="resultsTable">
+          <thead class="thead-light">
+            <tr>
+              <th style="width: 50px;"></th>
+              <th class="sortable" data-sort="memorial_number">
+                Memorial # <i class="fas fa-sort"></i>
+              </th>
+              <th class="sortable" data-sort="name">
+                Name <i class="fas fa-sort"></i>
+              </th>
+              <th class="sortable" data-sort="year_of_death">
+                Year of Death <i class="fas fa-sort"></i>
+              </th>
+              <th class="sortable" data-sort="source_type">
+                Source Type <i class="fas fa-sort"></i>
+              </th>
+              <th class="sortable" data-sort="site_code">
+                Site Code <i class="fas fa-sort"></i>
+              </th>
+              <th class="sortable" data-sort="ai_provider">
+                AI Model <i class="fas fa-sort"></i>
+              </th>
+              <th>Prompt Template</th>
+              <th>Template Version</th>
+              <th class="sortable" data-sort="estimated_cost_usd">
+                Cost (USD) <i class="fas fa-sort"></i>
+              </th>
+              <th class="sortable" data-sort="processed_date">
+                Processed <i class="fas fa-sort"></i>
+              </th>
+            </tr>
+          </thead>
+          <tbody id="resultsTableBody">
+            <!-- Data will be populated via JavaScript -->
+          </tbody>
+        </table>
+
+        <!-- Empty state message -->
+        <div id="emptyState" class="text-center p-4 d-none">
+          <i class="fas fa-search fa-3x mb-3 text-muted"></i>
+          <p class="lead">No results found</p>
+        </div>
+
+        <!-- Loading state -->
+        <div id="loadingState" class="text-center p-4">
+          <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+          <p class="mt-2">Loading results...</p>
+        </div>
+      </div>
+
+      <!-- Download section -->
+      <div class="mt-4">
+        <div class="form-group">
+          <label for="filenameInput">Export Filename (optional):</label>
+          <input type="text" class="form-control" id="filenameInput" placeholder="results">
+        </div>
+        <div class="btn-group" role="group">
+          <button id="downloadButton" class="btn btn-primary" onclick="downloadJsonResults(filenameInput, 'compact')"
+            disabled>
+            <i class="fas fa-download"></i> Download JSON
+          </button>
+          <button id="downloadCsvButton" class="btn btn-success" onclick="downloadCsvResults(filenameInput)" disabled>
+            <i class="fas fa-file-csv"></i> Download CSV
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <footer class="footer">
+    © 2026 Curlew Geospatial. All rights reserved. For more info,
+    contact me at
+    <a href="mailto:daniel@curlew.ie">daniel@curlew.ie</a> or
+    visit the
+    <a href="https://www.historicgraves.ie" target="_blank">Historic Graves</a>
+    website.
+  </footer>
+
+  <!-- Include JavaScript libraries -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <!-- Include Clipboard.js library for copying to clipboard -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
+
+  <!-- Combined JavaScript for results page -->
+  <script type="module" src="/js/modules/results/main.js"></script>
+  <script type="module" src="/js/modules/results/modelInfoPanel.js"></script>
+  <script type="module" src="/js/modules/results/tableEnhancements.js"></script>
+</body>
+
+</html>

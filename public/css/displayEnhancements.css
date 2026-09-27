@@ -1,0 +1,100 @@
+/* Prompt Metadata Modal */
+.prompt-metadata-modal {
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.metadata-row {
+  display: flex;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.metadata-row:last-child {
+  border-bottom: none;
+}
+
+.metadata-row .label {
+  font-weight: 600;
+  min-width: 100px;
+  color: #495057;
+}
+
+.metadata-row .value {
+  color: #212529;
+}
+
+/* Type Info Display */
+.type-info-container {
+  padding: 1rem;
+  background: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+}
+
+.type-info-field {
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  border-left: 3px solid #dee2e6;
+  background: #f8f9fa;
+}
+
+.type-info-field.required {
+  border-left-color: #0d6efd;
+}
+
+.type-info-field.optional {
+  border-left-color: #6c757d;
+}
+
+.field-name {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.field-type {
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+.nested-type-info {
+  margin-left: 1rem;
+  padding-left: 1rem;
+  border-left: 1px dashed #dee2e6;
+}
+
+/* Validation Status */
+.validation-status-container {
+  margin-top: 1rem;
+}
+
+.validation-status {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+}
+
+.validation-status.success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.validation-status.error {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.status-symbol {
+  margin-right: 0.5rem;
+  font-weight: bold;
+}
+
+.status-message {
+  font-size: 0.875rem;
+} 

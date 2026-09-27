@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New Schema - Curlew TextHarvester</title>
+
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css" />
+
+    <!-- Include jQuery and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
+
+    <style>
+        .wizard-step {
+            transition: opacity 0.3s ease-in-out;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="index.html">
+            <img src="/images/logo.png" alt="Curlew TextHarvester Logo" style="height: 50px; margin-right: 10px" />
+            Curlew TextHarvester
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">Upload</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="schemas.html">Schemas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="results.html">View Previous Results</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="content-wrap">
+        <div class="container mt-5">
+
+            <h2>Create New Document Type</h2>
+            <p class="text-muted">Teach the AI to recognize a new document format by uploading examples.</p>
+
+            <div id="alertContainer"></div>
+
+            <!-- Step 1: Upload -->
+            <div id="step-upload" class="wizard-step card p-4">
+                <h4>Step 1: Upload Examples</h4>
+                <p>Please provide <strong>3-5 clear images</strong> of the document type. These will be analyzed to
+                    determine the structure.</p>
+
+                <form action="#" class="dropzone mb-4" id="schemaDropzone">
+                    <div class="dz-message">Drop example files here (Images/PDF)</div>
+                </form>
+
+                <div class="text-right">
+                    <button id="btnAnalyze" class="btn btn-primary" disabled>Analyze Files</button>
+                </div>
+            </div>
+
+            <!-- Step 2: Loading -->
+            <div id="step-loading" class="wizard-step card p-5 text-center d-none">
+                <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <h4>Analyzing Documents...</h4>
+                <p class="text-muted">This may take up to a minute. The AI is identifying fields and data types.</p>
+            </div>
+
+            <!-- Step 3: Review & Edit -->
+            <div id="step-editor" class="wizard-step card p-4 d-none">
+                <h4>Step 2: Review Schema</h4>
+                <p>Review the fields detected by the AI. You can rename them or change their types if needed.</p>
+
+                <div class="form-group">
+                    <label for="schemaName"><strong>Document Type Name</strong></label>
+                    <input type="text" class="form-control" id="schemaName" placeholder="e.g. 19th Century Deed">
+                </div>
+
+                <table class="table table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th style="width: 28%">Field Name</th>
+                            <th style="width: 18%">Type</th>
+                            <th style="width: 36%">Description</th>
+                            <th style="width: 8%">Required</th>
+                            <th style="width: 10%">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fieldsTableBody">
+                        <!-- Dynamic Rows -->
+                    </tbody>
+                </table>
+
+                <button class="btn btn-outline-secondary btn-sm mb-4" id="btnAddField">
+                    + Add Custom Field
+                </button>
+
+                <hr>
+
+                <div class="d-flex justify-content-between">
+                    <button class="btn btn-outline-danger" onclick="location.reload()">Cancel / Start Over</button>
+                    <button class="btn btn-success" id="btnSaveSchema">Save Document Type</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer class="footer mt-4">
+        © 2026 Curlew Geospatial.
+    </footer>
+
+    <script type="module">
+        import { initWizard, handleUpload, saveSchema, loadSchemaForEdit, updateSchema } from "/js/modules/schemas/wizard.js";
+
+        // Initialize Dropzone and bindings
+        Dropzone.autoDiscover = false;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const editId = urlParams.get('edit');
+            const alertContainer = document.getElementById('alertContainer');
+            const btnSave = document.getElementById('btnSaveSchema');
+
+            // Check if this is edit mode
+            if (editId) {
+                // Edit mode: load existing schema
+                document.getElementById('step-upload').classList.add('d-none');
+                document.querySelector('h2').textContent = 'Edit Document Type';
+                btnSave.innerText = 'Save Changes';
+
+                loadSchemaForEdit(editId).then(() => {
+                    // Wire up save button for update
+                    btnSave.addEventListener('click', async () => {
+                        try {
+                            btnSave.disabled = true;
+                            btnSave.innerText = 'Updating...';
+                            await updateSchema(editId);
+                            window.location.href = 'schemas.html';
+                        } catch (err) {
+                            alertContainer.innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
+                            btnSave.disabled = false;
+                            btnSave.innerText = 'Save Changes';
+                        }
+                    });
+                }).catch(err => {
+                    alertContainer.innerHTML = `<div class="alert alert-danger">Failed to load schema: ${err.message}</div>`;
+                    document.getElementById('step-editor').classList.remove('d-none');
+                });
+
+            } else {
+                // Create mode: standard wizard flow
+                const dropzone = new Dropzone("#schemaDropzone", {
+                    url: "/dummy-url", // We handle upload manually
+                    autoProcessQueue: false,
+                    uploadMultiple: true,
+                    parallelUploads: 10,
+                    maxFiles: 10,
+                    acceptedFiles: "image/*,application/pdf",
+                    addRemoveLinks: true
+                });
+
+                const btnAnalyze = document.getElementById('btnAnalyze');
+
+                dropzone.on("addedfile", () => {
+                    if (dropzone.files.length >= 1) btnAnalyze.disabled = false;
+                });
+                dropzone.on("removedfile", () => {
+                    if (dropzone.files.length === 0) btnAnalyze.disabled = true;
+                });
+
+                btnAnalyze.addEventListener('click', async () => {
+                    document.getElementById('step-upload').classList.add('d-none');
+                    document.getElementById('step-loading').classList.remove('d-none');
+                    alertContainer.innerHTML = '';
+
+                    try {
+                        const { renderEditor } = await import("/js/modules/schemas/wizard.js");
+                        const files = dropzone.files;
+                        const result = await handleUpload(files);
+                        renderEditor(result); // This switches the view to step-editor
+
+                    } catch (err) {
+                        document.getElementById('step-loading').classList.add('d-none');
+                        document.getElementById('step-upload').classList.remove('d-none');
+                        alertContainer.innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
+                    }
+                });
+
+                btnSave.addEventListener('click', async () => {
+                    try {
+                        btnSave.disabled = true;
+                        btnSave.innerText = 'Saving...';
+                        await saveSchema();
+                        window.location.href = 'schemas.html';
+                    } catch (err) {
+                        alertContainer.innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
+                        btnSave.disabled = false;
+                        btnSave.innerText = 'Save Document Type';
+                    }
+                });
+            }
+
+            // Add Field Handler (used in both create and edit modes)
+            document.getElementById('btnAddField').addEventListener('click', () => {
+                const tbody = document.getElementById('fieldsTableBody');
+                const tr = document.createElement('tr');
+                tr.className = 'field-row';
+                tr.innerHTML = `
+                <td><input type="text" class="form-control field-name" placeholder="new_field" required></td>
+                <td>
+                    <select class="form-control field-type">
+                        <option value="string">String</option>
+                        <option value="number">Number</option>
+                        <option value="date">Date</option>
+                        <option value="boolean">Boolean</option>
+                    </select>
+                </td>
+                <td><input type="text" class="form-control field-desc" placeholder="Description"></td>
+                <td class="text-center">
+                    <input type="checkbox" class="field-required">
+                </td>
+                <td>
+                    <button type="button" class="btn btn-sm btn-danger remove-field" onclick="this.closest('tr').remove()">&times;</button>
+                </td>
+            `;
+                tbody.appendChild(tr);
+            });
+        });
+    </script>
+</body>
+
+</html>

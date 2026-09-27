@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Processing - Curlew TextHarvester</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
+  <style>
+    /* Main content styles */
+    .processing-content-wrap {
+      min-height: calc(100vh - 180px);
+      display: flex;
+      align-items: center;
+      padding: 2rem 1rem;
+      background-color: #f8f9fa;
+    }
+
+    .processing-card {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-body {
+      padding: 3rem;
+    }
+
+    /* Progress container styles */
+    .progress-container {
+      margin: 3rem 0;
+      padding: 2rem;
+      border-radius: 12px;
+      background: #eef2f7;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* Progress wrapper */
+    .progress-wrapper {
+      width: 100%;
+      max-width: 400px;
+    }
+
+    /* Model display styles */
+    #modelDisplay {
+      font-size: 1.75rem;
+      font-weight: 600;
+      color: #2c3e50;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Status message styles */
+    .progress-bar__status {
+      text-align: center;
+      font-size: 1.1rem;
+      color: #2c3e50;
+      font-weight: 500;
+      text-transform: capitalize;
+    }
+
+    .progress-bar.error .progress-bar__status {
+      color: #dc3545;
+    }
+
+    .progress-bar.complete .progress-bar__status {
+      color: #0d6efd;
+    }
+
+    /* Progress bar styles */
+    .progress-bar {
+      position: relative;
+      height: 24px;
+      background: #e0e0e0;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+      width: 100%;
+    }
+
+    .progress-bar__fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: linear-gradient(to right, #0d6efd, #0a58ca);
+      transition: width 0.3s ease-in-out;
+      width: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 500;
+      font-size: 0.9rem;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .progress-bar.error .progress-bar__fill {
+      background: linear-gradient(to right, #dc3545, #b02a37);
+    }
+
+    .progress-bar.complete .progress-bar__fill {
+      background: linear-gradient(to right, #0d6efd, #0a58ca);
+    }
+
+    /* Controls styles */
+    .controls {
+      margin: 2rem 0 0;
+      text-align: center;
+    }
+
+    #cancelProcessingButton {
+      padding: 0.75rem 2rem;
+      font-size: 1rem;
+      font-weight: 500;
+      border-radius: 25px;
+      transition: all 0.2s ease;
+      background: #dc3545;
+      border: none;
+      box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+    }
+
+    #cancelProcessingButton:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+      background: #c82333;
+    }
+
+    #cancelProcessingButton:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+    }
+
+    /* Error container styles */
+    #errorContainer {
+      margin-top: 2rem;
+      border-radius: 8px;
+      border: none;
+      background-color: #fff3cd;
+      color: #856404;
+    }
+
+    /* Footer adjustment */
+    .processing-footer {
+      margin-top: auto;
+      position: relative;
+      background: white;
+      border-top: 1px solid #eef2f7;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .processing-content-wrap {
+        padding: 1rem;
+      }
+
+      .card-body {
+        padding: 1.5rem;
+      }
+
+      #modelDisplay {
+        font-size: 1.5rem;
+      }
+
+      .progress-bar {
+        height: 20px;
+      }
+
+      .progress-bar__status {
+        font-size: 1rem;
+      }
+
+      .progress-container {
+        padding: 1.5rem;
+        margin: 2rem 0;
+      }
+
+      .metric-value {
+        font-size: 1rem;
+      }
+
+      .metric-item {
+        min-height: 70px;
+        padding: 0.5rem 0.25rem;
+      }
+    }
+
+    /* Performance metrics styles */
+    .metric-item {
+      padding: 0.75rem 0.5rem;
+      min-height: 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .metric-value {
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.2;
+      color: #495057;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      text-align: center;
+    }
+
+    .metric-label {
+      font-size: 0.65rem;
+      color: #6c757d;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 0.5rem;
+      font-weight: 500;
+      text-align: center;
+      white-space: nowrap;
+      line-height: 1.1;
+    }
+
+    #performance-widget .card {
+      border: 1px solid #dee2e6;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    }
+
+    #performance-widget .metric-item {
+      border-right: 1px solid #f1f3f4;
+      transition: background-color 0.2s ease;
+    }
+
+    #performance-widget .metric-item:hover {
+      background-color: rgba(0, 123, 255, 0.05);
+      cursor: help;
+    }
+
+    #performance-widget .row:last-child .metric-item {
+      border-right: none;
+    }
+
+    #performance-widget .col-4:last-child .metric-item,
+    #performance-widget .col-6:last-child .metric-item {
+      border-right: none;
+    }
+
+    /* Loading animation for placeholder text */
+    .metric-value.loading {
+      opacity: 0.7;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        opacity: 0.7;
+      }
+
+      50% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0.7;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="index.html">
+      <img src="/images/logo.png" alt="Curlew TextHarvester Logo" style="height: 50px; width: auto; margin-right: 10px" />
+      Curlew TextHarvester
+    </a>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="schemas.html">Schemas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="results.html">View Previous Results</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="content-wrap processing-content-wrap">
+    <div class="container">
+      <div class="card processing-card">
+        <div class="card-body">
+          <h5 class="card-title" id="modelDisplay"></h5>
+
+          <!-- Progress Bar Container -->
+          <div id="progress-container" class="progress-container">
+            <div class="progress-bar__status">Ready to start processing...</div>
+            <div class="progress-wrapper">
+              <div class="progress-bar">
+                <div class="progress-bar__fill"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Performance Metrics Widget -->
+          <div id="performance-widget" class="mt-3">
+            <div class="card">
+              <div class="card-body py-3">
+                <h6 class="card-title mb-3 text-muted" data-toggle="tooltip" data-placement="right"
+                  title="Real-time processing performance statistics">Performance Metrics</h6>
+                <div class="row text-center">
+                  <div class="col-4">
+                    <div class="metric-item" data-toggle="tooltip" data-placement="top"
+                      title="Number of files waiting to be processed">
+                      <div class="metric-value" id="queue-position">-</div>
+                      <div class="metric-label">Queue</div>
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="metric-item" data-toggle="tooltip" data-placement="top"
+                      title="Estimated time to complete all remaining files">
+                      <div class="metric-value" id="estimated-time">-</div>
+                      <div class="metric-label">Est. Time</div>
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="metric-item" data-toggle="tooltip" data-placement="top"
+                      title="Average processing time per file">
+                      <div class="metric-value" id="avg-speed">-</div>
+                      <div class="metric-label">Speed</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row text-center mt-2">
+                  <div class="col-6">
+                    <div class="metric-item" data-toggle="tooltip" data-placement="top"
+                      title="Percentage of files processed successfully">
+                      <div class="metric-value text-success" id="success-rate">-</div>
+                      <div class="metric-label">Success</div>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="metric-item" data-toggle="tooltip" data-placement="top"
+                      title="Files processed per minute in the last 60 seconds">
+                      <div class="metric-value text-info" id="throughput">-</div>
+                      <div class="metric-label">Rate</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Error Container -->
+          <div id="errorContainer" class="mt-4 alert alert-warning" style="display: none;">
+            <h5>Processing Notices</h5>
+            <p>Some files are being processed with exceptions:</p>
+            <div id="errorList" class="mt-2"></div>
+          </div>
+
+          <!-- Processing Controls -->
+          <div class="controls">
+            <button id="cancelProcessingButton" class="btn btn-danger">Cancel Processing</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer processing-footer">
+    © 2026 Curlew Geospatial. For more info, contact
+    <a href="mailto:daniel@curlew.ie">daniel@curlew.ie</a> or
+    <a href="https://www.historicgraves.ie" target="_blank">Historic Graves</a> website.
+  </footer>
+
+  <!-- Import modules -->
+  <script type="module">
+    import { ProgressBarUI } from '/js/modules/processing/ProgressBarUI.js';
+    import { ProgressClient } from '/js/modules/processing/ProgressClient.js';
+    import { ProgressController } from '/js/modules/processing/ProgressController.js';
+    import { initModelTracking, updateModelDisplay } from '/js/modules/processing/modelTracking.js';
+    import { handleCancelProcessing } from '/js/modules/processing/cancelProcessing.js';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize model tracking
+      initModelTracking();
+
+      // Display selected model
+      const selectedModel = localStorage.getItem('selectedModel') || 'openai';
+      updateModelDisplay(selectedModel);
+
+      // Initialize progress components
+      const progressBar = new ProgressBarUI('progress-container');
+      const progressClient = new ProgressClient();
+      const progressController = new ProgressController(progressBar, progressClient);
+
+      // Add cleanup hook for redirect
+      progressController.addCleanupHook(() => {
+        // Add a small delay before redirecting
+        setTimeout(() => {
+          window.location.href = '/results.html';
+        }, 800);
+      });
+
+      // Performance widget update function
+      function updatePerformanceWidget(progressData) {
+        // Widget is always visible - just update the content
+        const hasQueueData = progressData && progressData.queue;
+
+        if (hasQueueData) {
+          // Remove loading classes and update with real data
+          const elements = ['queue-position', 'estimated-time', 'avg-speed', 'success-rate', 'throughput'];
+          elements.forEach(id => {
+            document.getElementById(id).classList.remove('loading');
+          });
+
+          // Update with real data
+          document.getElementById('queue-position').textContent =
+            progressData.queue.size || '0';
+
+          // Update estimated time based on average processing time
+          const avgTime = progressData.queue.averageProcessingTime || 0;
+          const queueSize = progressData.queue.size || 0;
+          const estimatedSeconds = Math.round(avgTime * queueSize);
+          const estimatedText = estimatedSeconds > 0 ?
+            `${Math.round(estimatedSeconds)}s` : '-';
+          document.getElementById('estimated-time').textContent = estimatedText;
+
+          // Update average speed
+          const avgSpeed = avgTime > 0 ? `${avgTime}s/file` : '-';
+          document.getElementById('avg-speed').textContent = avgSpeed;
+
+          // Update success rate
+          const successRate = progressData.queue.successRate || 0;
+          document.getElementById('success-rate').textContent =
+            successRate > 0 ? `${Math.round(successRate)}%` : '-';
+
+          // Update throughput
+          const throughput = progressData.queue.throughputPerMinute || 0;
+          document.getElementById('throughput').textContent =
+            throughput > 0 ? `${throughput.toFixed(1)}` : '-';
+
+        } else {
+          // Add loading classes for animation
+          const elements = ['queue-position', 'estimated-time', 'avg-speed', 'success-rate', 'throughput'];
+
+          // Show placeholder data or current state info
+          const isProcessing = progressData && progressData.state === 'processing';
+          const isComplete = progressData && progressData.state === 'complete';
+
+          if (isProcessing) {
+            elements.forEach(id => {
+              const element = document.getElementById(id);
+              element.classList.add('loading');
+            });
+            document.getElementById('queue-position').textContent = 'Active';
+            document.getElementById('estimated-time').textContent = '...';
+            document.getElementById('avg-speed').textContent = '...';
+            document.getElementById('success-rate').textContent = '...';
+            document.getElementById('throughput').textContent = '...';
+          } else if (isComplete) {
+            elements.forEach(id => {
+              document.getElementById(id).classList.remove('loading');
+            });
+            document.getElementById('queue-position').textContent = '0';
+            document.getElementById('estimated-time').textContent = 'Done';
+            document.getElementById('avg-speed').textContent = 'Final';
+            document.getElementById('success-rate').textContent = '100%';
+            document.getElementById('throughput').textContent = 'Complete';
+          } else {
+            elements.forEach(id => {
+              document.getElementById(id).classList.remove('loading');
+            });
+            document.getElementById('queue-position').textContent = '0';
+            document.getElementById('estimated-time').textContent = '-';
+            document.getElementById('avg-speed').textContent = '-';
+            document.getElementById('success-rate').textContent = '-';
+            document.getElementById('throughput').textContent = '-';
+          }
+        }
+      }
+
+      // Hook into progress updates by overriding the pollProgress method
+      const originalPollProgress = progressController.pollProgress;
+      progressController.pollProgress = async function () {
+        if (!this.isPolling) {
+          return;
+        }
+
+        try {
+          // Get data directly from the processing-status endpoint to ensure we get queue data
+          const response = await fetch('/processing-status');
+          const rawData = await response.json();
+
+          // Update performance widget with raw data that includes queue
+          updatePerformanceWidget(rawData);
+
+          // Also get the normalized data for the progress bar
+          const progressData = await this.client.getProgress();
+
+          // Call original handleProgress with normalized data
+          await this.handleProgress(progressData);
+        } catch (error) {
+          console.error('[ProgressController] Failed to poll progress:', error);
+          this.progressBar.showError();
+          this.stopPolling();
+        }
+      };
+
+      // Initialize Bootstrap tooltips for performance metrics
+      $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+      });
+
+      // Initialize widget with default state
+      updatePerformanceWidget({ state: 'waiting', progress: 0 });
+
+      // Load initial data
+      fetch('/processing-status')
+        .then(r => r.json())
+        .then(data => updatePerformanceWidget(data))
+        .catch(err => console.error('Failed to load initial metrics:', err));
+
+      // Start polling immediately since processing has already begun
+      progressController.startPolling();
+
+      // Handle cancel button
+      const cancelButton = document.getElementById('cancelProcessingButton');
+      if (cancelButton) {
+        cancelButton.addEventListener('click', async () => {
+          await handleCancelProcessing(progressBar);
+          progressController.stopPolling();
+          progressBar.showError();
+        });
+      }
+    });
+  </script>
+</body>
+
+</html>

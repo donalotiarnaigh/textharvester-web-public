@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Schemas - Curlew TextHarvester</title>
+
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css" />
+
+    <!-- Include jQuery and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="index.html">
+            <img src="/images/logo.png" alt="Curlew TextHarvester Logo" style="height: 50px; margin-right: 10px" />
+            Curlew TextHarvester
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">Upload</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="schemas.html">Schemas <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="results.html">View Previous Results</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="content-wrap">
+        <div class="container mt-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2>Custom Schemas</h2>
+                <a href="schema-wizard.html" class="btn btn-primary" title="Create a new document type">
+                    + New Schema
+                </a>
+            </div>
+
+            <div id="alertContainer"></div>
+
+            <div class="card">
+                <div class="card-body p-0">
+                    <table class="table table-striped table-hover mb-0" id="schemasTable">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Name</th>
+                                <th>Table Name</th>
+                                <th>Version</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Populated by JS -->
+                            <tr>
+                                <td colspan="5" class="text-center text-muted p-4">Loading schemas...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer mt-4">
+        © 2026 Curlew Geospatial. For more info, contact
+        <a href="mailto:daniel@curlew.ie">daniel@curlew.ie</a> or
+        <a href="https://www.historicgraves.ie" target="_blank">Historic Graves</a>
+        website.
+    </footer>
+
+    <!-- Schema Details Modal -->
+    <div class="modal fade" id="schemaModal" tabindex="-1" aria-labelledby="schemaModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="schemaModalLabel">Schema Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h6 id="modalSchemaName" class="mb-3"></h6>
+                    <p><strong>Table:</strong> <code id="modalTableName"></code></p>
+                    <p><strong>ID:</strong> <code id="modalSchemaId"></code></p>
+
+                    <h6 class="mt-4">Fields</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody id="modalFieldsBody">
+                                <!-- Fields populated via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initSchemaList } from "/js/modules/schemas/list.js";
+        initSchemaList();
+    </script>
+</body>
+
+</html>

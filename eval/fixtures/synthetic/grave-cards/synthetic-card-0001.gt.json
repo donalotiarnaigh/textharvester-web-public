@@ -1,0 +1,147 @@
+{
+  "schema_version": "1.0.0",
+  "document_type": "grave_card",
+  "image_ref": "eval/source-images/grave-cards/SYNTHETIC-CARD-0001.pdf",
+  "annotator": "synthetic",
+  "annotation_date": "2026-09-27",
+  "blind_transcribed": false,
+  "difficulty": 1,
+  "annotator_notes": "Synthetic fixture — contains no real people. One deliberate correction in the second interment so the scorer exercises a non-perfect case.",
+  "extraction_provider": "synthetic",
+  "extraction_model": "fixture",
+  "model_output": {
+    "section": "Z",
+    "grave_number": "1",
+    "data_json": {
+      "location": {
+        "section": "Z",
+        "grave_number": "1",
+        "plot_identifier": "99"
+      },
+      "grave": {
+        "number_buried": 2,
+        "status": "occupied",
+        "description_of_grave": "EXAMPLE DESCRIPTION",
+        "dimensions": {
+          "raw_text": "10' x 8'",
+          "length_ft": 10,
+          "width_ft": 8,
+          "unit": "ft"
+        },
+        "plot_owned_by": "EXAMPLE OWNER",
+        "comments": "SYNTHETIC RECORD"
+      },
+      "interments": [
+        {
+          "sequence_number": 1,
+          "name": {
+            "surname": "PERSON",
+            "given_names": "EXAMPLE",
+            "full_name": "EXAMPLE PERSON"
+          },
+          "date_of_death": {
+            "iso": "1900-01-01",
+            "raw_text": "1ST JANY. 1900",
+            "certainty": "certain"
+          },
+          "date_of_burial": {
+            "iso": "1900-01-04",
+            "raw_text": "JANUARY 4TH 1900"
+          },
+          "age_at_death": "40 YEARS",
+          "notes": "OF EXAMPLE TOWN"
+        },
+        {
+          "sequence_number": 2,
+          "name": {
+            "surname": "SUBJECT",
+            "given_names": "TEST",
+            "full_name": "TEST SUBJECT"
+          },
+          "date_of_death": {
+            "iso": "1905-03-03",
+            "raw_text": "3RD MARCH 1905",
+            "certainty": "certain"
+          },
+          "date_of_burial": {
+            "iso": "1905-03-06",
+            "raw_text": "MARCH 6TH 1905"
+          },
+          "age_at_death": "6 MONTHS",
+          "notes": null
+        }
+      ],
+      "inscription": "SYNTHETIC INSCRIPTION",
+      "sketch": null
+    }
+  },
+  "corrected": {
+    "section": "Z",
+    "grave_number": "1",
+    "data_json": {
+      "location": {
+        "section": "Z",
+        "grave_number": "1",
+        "plot_identifier": "99"
+      },
+      "grave": {
+        "number_buried": 2,
+        "status": "occupied",
+        "description_of_grave": "EXAMPLE DESCRIPTION",
+        "dimensions": {
+          "raw_text": "10' x 8'",
+          "length_ft": 10,
+          "width_ft": 8,
+          "unit": "ft"
+        },
+        "plot_owned_by": "EXAMPLE OWNER",
+        "comments": "SYNTHETIC RECORD"
+      },
+      "interments": [
+        {
+          "sequence_number": 1,
+          "name": {
+            "surname": "PERSON",
+            "given_names": "EXAMPLE",
+            "full_name": "EXAMPLE PERSON"
+          },
+          "date_of_death": {
+            "iso": "1900-01-01",
+            "raw_text": "1ST JANY. 1900",
+            "certainty": "certain"
+          },
+          "date_of_burial": {
+            "iso": "1900-01-04",
+            "raw_text": "JANUARY 4TH 1900"
+          },
+          "age_at_death": "40 YEARS",
+          "notes": "OF EXAMPLE TOWN"
+        },
+        {
+          "sequence_number": 2,
+          "name": {
+            "surname": "SUBJECT",
+            "given_names": "TEST",
+            "full_name": "TEST SUBJECT"
+          },
+          "date_of_death": {
+            "iso": "1905-03-03",
+            "raw_text": "3RD MARCH 1905",
+            "certainty": "certain"
+          },
+          "date_of_burial": {
+            "iso": "1905-03-06",
+            "raw_text": "MARCH 6TH 1905"
+          },
+          "age_at_death": "6 MONTHS",
+          "notes": "OF EXAMPLE TOWN"
+        }
+      ],
+      "inscription": "SYNTHETIC INSCRIPTION",
+      "sketch": null
+    }
+  },
+  "corrections_made": ["data_json.interments[1].notes"],
+  "needs_review_model": false,
+  "needs_review_actual": true
+}

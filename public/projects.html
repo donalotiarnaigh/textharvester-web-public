@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects - TextHarvester</title>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="index.html">
+      <img src="/images/logo.png" alt="Curlew TextHarvester Logo" style="height: 50px; margin-right: 10px" />
+      Curlew TextHarvester
+    </a>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="index.html">Upload</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="schemas.html">Schemas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="results.html">View Results</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="content-wrap">
+    <div class="container">
+      <div class="row mt-4 mb-4">
+        <div class="col-md-8">
+          <h1>Projects</h1>
+          <p class="text-muted">Manage your projects to organize uploads and results</p>
+        </div>
+        <div class="col-md-4 text-right">
+          <button class="btn btn-primary" data-toggle="modal" data-target="#createProjectModal">
+            <i class="fas fa-plus"></i> New Project
+          </button>
+        </div>
+      </div>
+
+      <!-- Alert Container -->
+      <div id="alertContainer"></div>
+
+      <!-- Projects Grid -->
+      <div id="projectsContainer" class="row">
+        <div class="col-12">
+          <div class="text-center text-muted py-5">
+            <i class="fas fa-folder-open fa-3x mb-3"></i>
+            <p>No projects yet. Create one to get started.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading Spinner -->
+      <div id="loadingSpinner" style="display: none; text-align: center; padding: 2rem;">
+        <div class="spinner-border" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create/Edit Project Modal -->
+  <div class="modal fade" id="createProjectModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalTitle">Create New Project</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="projectForm">
+            <div class="form-group">
+              <label for="projectName">Project Name *</label>
+              <input type="text" class="form-control" id="projectName" required />
+            </div>
+            <div class="form-group">
+              <label for="projectDescription">Description</label>
+              <textarea class="form-control" id="projectDescription" rows="3"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" id="saveProjectBtn">Save Project</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Delete Project</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p id="deleteMessage"></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- jQuery and Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <!-- Project Management Module -->
+  <script type="module" src="/js/modules/projects/main.js"></script>
+</body>
+
+</html>

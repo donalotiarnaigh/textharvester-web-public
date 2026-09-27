@@ -1,0 +1,152 @@
+# Implementation Plan - Grave Record Card Processing Pipeline
+
+This plan follows a TDD approach. Tests are written first to define behavior (Red), then implementation follows to pass tests (Green), followed by refactoring.
+
+- [x] 1. Core Data Structures & Database Migration (Foundation)
+  - [x] 1.1 Create test database schema and migration script
+    - Use `src/utils/graveCardStorage.js` as the target file.
+    - Define SQLite schema as per design (columns: id, file_name, section, grave_number, data_json, processed_date, ai_provider).
+    - _Requirements: 3.1, 4.2_
+  - [x] 1.2 Write tests for GraveCardStorage (TDD)
+    - **Happy Path**: Test `storeGraveCard` with valid full JSON object. Verify `data_json` stores full object and columns extract metadata correctly.
+    - **Happy Path**: Test `exportCardsToCsv` with nested interments (confirm flattening to `interment_1_name`, etc.).
+    - **Unhappy Path**: Test `storeGraveCard` with missing required fields (throw error).
+    - _Requirements: 3.2, 4.4, 4.5_
+  - [x] 1.3 Implement GraveCardStorage
+    - Implement `initialize` table logic.
+    - Implement `storeGraveCard` with hybrid column/JSON approach.
+    - Implement `exportCardsToCsv` with logic to flatten nested `interments` array into wide-format columns.
+    - _Requirements: 3.1, 3.2, 4.5_
+
+- [x] 2. GraveCardProcessor Component (Image Processing)
+  - [x] 2.1 Write tests for PDF Stitching (TDD)
+    - Target: `src/utils/imageProcessing/graveCardProcessor.test.js`.
+    - **Happy Path**: Mock `pdftocairo` returning 2 images -> Verify `stitch` calls `sharp` to vertically join them.
+    - **Unhappy Path**: Input PDF has 1 page -> Throw "InvalidPageCount".
+    - **Unhappy Path**: Input PDF has 3 pages -> Throw "InvalidPageCount".
+    - _Requirements: 1.1, 1.2, 4.1_
+  - [x] 2.2 Implement GraveCardProcessor
+    - Create `src/utils/imageProcessing/graveCardProcessor.js`.
+    - Implement `processPdf` to call `pdftocairo`.
+    - Implement validation logic for page count (strictly 2).
+    - Implement stitching logic using `sharp` (vertical join + padding).
+    - _Requirements: 1.1, 1.2, 1.3_
+
+- [x] 3. GraveCardPrompt Template (AI Interaction)
+  - [x] 3.1 Write tests for Grave Record Schema Validation (TDD)
+    - Target: `src/utils/prompts/templates/GraveCardPrompt.test.js`.
+    - **Happy Path**: Validate full JSON payload matches `GraveRecord` schema.
+    - **Happy Path**: Test transcription conventions (verify `-` and `|` are accepted).
+    - **Unhappy Path**: Missing `card_metadata`.
+    - **Unhappy Path**: `interments` is not an array.
+    - _Requirements: 2.1, 2.2, 2.3, 4.3_
+  - [x] 3.2 Implement GraveCardPrompt Class
+    - Create `src/utils/prompts/templates/GraveCardPrompt.js` extending `BasePrompt`.
+    - Implement `getPromptText` with strict transcription rules.
+    - Implement `validateAndConvert` with strict schema validation.
+    - Register in `PromptFactory`.
+    - _Requirements: 2.1, 2.2, 2.3_
+
+- [ ] 4. File Processing Integration (Pipeline Wiring)
+  - [x] 4.1 Write integration tests for fileProcessing.js
+    - Target: `src/utils/fileProcessing.test.js`.
+    - **Happy Path**: Mock `GraveCardProcessor` and `Provider`. Call `processFile` with `source_type='grave_record_card'`. Verify flow: Processor -> Provider -> Storage.
+    - **Unhappy Path**: Processor fails -> Error logged/rethrown.
+    - _Requirements: 1.1, 1.2, 3.1_
+  - [x] 4.2 Update fileProcessing.js
+    - Add logic to check `source_type`.
+    - If `grave_record_card`, bypass standard image read.
+    - Call `GraveCardProcessor.processPdf`.
+    - Instantiate `GraveCardPrompt`.
+    - Call `GraveCardStorage.storeGraveCard`.
+    - _Requirements: 1.3, 4.4_
+
+- [ ] 5. Configuration & Verification
+  - [x] 5.1 Update Config
+    - Add `graveCard` settings (stitch padding, resolution) to `config.json`.
+    - _Requirements: Non-functional_
+
+- [ ] 6. Frontend Integration - Phase 1: Minimal Integration (~5 minutes)
+  - [x] 6.1 Add Source Type Option
+    - Update `public/js/modules/index/sourceTypeSelection.js` to add "Grave Record Card" option to `SOURCE_TYPES` array.
+    - _Requirements: Frontend access to grave card processing_
+  - [x] 6.2 Update Upload Validation
+    - Update `src/controllers/uploadHandler.js` to add `'grave_record_card'` to `validSourceTypes` array.
+    - _Requirements: Server-side validation_
+  - [x] 6.3 Add Result Badge Styling
+    - Update `public/js/modules/results/main.js` to add grave card badge class (`badge-warning`) in `getSourceTypeBadgeClass()`.
+    - Update `formatSourceType()` to map `'grave_record_card'` to `'Grave Record Card'`.
+    - _Requirements: Results page display_
+
+- [ ] 7. Frontend Integration - Phase 2: Results Integration (~30 minutes)
+  - [x] 7.1 Backend API Routes & Controller
+    - Create `src/routes/graveCardRoutes.js` with routes for listing and CSV export.
+    - Create `src/controllers/graveCardController.js` with request handlers.
+    - Register routes in `server.js`: `app.use('/api/grave-cards', graveCardRoutes)`.
+    - _Requirements: API endpoints for `GET /api/grave-cards` and `GET /api/grave-cards/csv`_
+  - [x] 7.2 Frontend API Client
+    - Create `public/js/modules/api/graveCards.js` for API integration.
+    - _Requirements: Client-side API access_
+  - [x] 7.3 Enhanced Results Display
+    - Update results page to show enhanced grave card layout in expanded rows.
+    - Display: location (section, grave number), status, burial count, interments table, inscription.
+    - Add "Export Grave Cards" button (visible only when grave cards exist).
+    - _Requirements: Enhanced UX for grave card data_
+  - [x] 7.4 Manual Testing Phase 2
+    - Verified API returns all grave cards with parsed JSON (via integration test).
+    - Test CSV download with flattened columns (via integration test).
+    - [x] Verified enhanced layout in expanded rows (Manual check required).
+    - [x] Verified export button appears only when cards exist (Manual check required).
+
+- [ ] 8. Frontend Integration - Phase 3: Enhanced UX (~1-2 hours)
+  - [x] 8.1 Upload Enhancements
+    - Add file type validation (PDF only for grave cards).
+    - Add dynamic help text based on source type.
+    - Add warning about 2-page requirement.
+    - _Requirements: Improved upload experience_
+  - [x] 8.2 Results Enhancements
+    - Add summary cards (total cards, interments, occupied/vacant).
+    - Add section filter dropdown.
+    - Add grave number search.
+    - Implement combined filter logic.
+    - _Requirements: Improved results filtering and navigation_
+  - [x] 8.3 Manual Testing Phase 3
+    - [x] 1. Upload & Validation
+  - [x] 1.1 Source Type Selection
+  - [x] 1.2 File Validation
+- [x] 2. Pipeline Processing (End-to-End)
+  - [x] 2.1 Successful Processing
+- [x] 3. Results Display
+  - [x] 3.1 Badge & Metadata
+  - [x] 3.2 Detail View (Expand Row)
+  - [x] 3.3 Enhanced UI Controls
+  - [x] 3.4 Filtering Functionality
+- [x] 4. Data Export
+  - [x] 4.1 CSV Export (Flattened & Dynamic)
+- [x] 5. Database State (Optional)
+  - [x] 5.1 Verification
+    - Process sample 2-page PDF from `/Users/danieltierney/projects/historic-graves/11_Douglas`.
+    - Verify PDF is split into 2 images.
+    - Verify images are stitched vertically.
+    - Verify AI processing completes successfully.
+    - Verify grave card record exists in database.
+    - Verify `section` and `grave_number` columns are correctly populated.
+    - Verify `data_json` contains complete interment data.
+    - Verify `ai_provider` is recorded.
+    - _Requirements: 3.1, 3.2, 4.2_
+  - [x] 9.3 CSV Export Verification
+    - Export grave cards to CSV.
+    - Verify nested interments are flattened (e.g., `interment_1_name`, `interment_2_name`).
+    - Verify all metadata columns are present.
+    - Verify CSV can be opened in spreadsheet software.
+    - _Requirements: 4.4, 4.5_
+  - [x] 9.4 Full Pipeline Validation
+    - Upload multiple grave card PDFs through frontend.
+    - Verify all cards process successfully.
+    - Verify data integrity across upload → processing → storage → export.
+    - _Requirements: All_
+  - [x] 9.5 Manual Testing Phase 1 (Frontend Minimal Integration)
+    - Select "Grave Record Card" from dropdown on upload page.
+    - Upload 2-page PDF and verify processing.
+    - Verify result appears with amber badge on results page.
+    - Verify expandable row shows JSON data.

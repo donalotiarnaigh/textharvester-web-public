@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0.0",
+  "document_type": "memorial",
+  "image_ref": "eval/source-images/memorials/SYNTHETIC-MEMORIAL-0001.jpg",
+  "annotator": "synthetic",
+  "annotation_date": "2026-09-27",
+  "blind_transcribed": false,
+  "difficulty": 1,
+  "annotator_notes": "Synthetic fixture — contains no real people. Record 0 is a perfect match; record 1 carries one deliberate correction so the scorer exercises a non-perfect case.",
+  "extraction_provider": "synthetic",
+  "extraction_model": "fixture",
+  "records": [
+    {
+      "record_index": 0,
+      "model_output": {
+        "memorial_number": null,
+        "first_name": "EXAMPLE",
+        "last_name": "PERSON",
+        "year_of_death": 1900,
+        "inscription": "In|Loving Memory|of|EXAMPLE PERSON|DIED 1ST JANUARY 1900"
+      },
+      "corrected": {
+        "memorial_number": null,
+        "first_name": "EXAMPLE",
+        "last_name": "PERSON",
+        "year_of_death": 1900,
+        "inscription": "In|Loving Memory|of|EXAMPLE PERSON|DIED 1ST JANUARY 1900"
+      },
+      "corrections_made": [],
+      "needs_review_model": false,
+      "needs_review_actual": false
+    },
+    {
+      "record_index": 1,
+      "model_output": {
+        "memorial_number": null,
+        "first_name": "TEST",
+        "last_name": "SUBJECT",
+        "year_of_death": 1905,
+        "inscription": "Sacred|to the memory of|TEST SUBJECT|who died 1905"
+      },
+      "corrected": {
+        "memorial_number": null,
+        "first_name": "TEST",
+        "last_name": "SUBJECT",
+        "year_of_death": 1905,
+        "inscription": "Sacred|to the memory of|TEST SUBJECT|who died 3RD MARCH 1905"
+      },
+      "corrections_made": ["inscription"],
+      "needs_review_model": false,
+      "needs_review_actual": true
+    }
+  ]
+}

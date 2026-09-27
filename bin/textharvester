@@ -1,0 +1,81 @@
+#!/usr/bin/env node
+
+/**
+ * TextHarvester CLI Entry Point
+ * Task 1.2 - CLI Entry Point Implementation
+ * 
+ * Main entry point for the TextHarvester command line interface.
+ * Parses global options and routes to appropriate subcommands.
+ * 
+ * Requirements: 8.1, 8.2, 5.4
+ */
+
+const { program } = require('commander');
+require('dotenv').config();
+const pkg = require('../package.json');
+
+// Register global options
+program
+  .name('th')
+  .description('TextHarvester CLI - OCR processing for heritage documents')
+  .version(pkg.version)
+  .option('-c, --config <path>', 'Path to config file', './config.json')
+  .option('-v, --verbose', 'Enable verbose logging (use -vv for debug)', (_, prev) => (prev || 0) + 1, 0)
+  .option('-q, --quiet', 'Suppress non-error output')
+  .option('--output <format>', 'Output format: json, table, csv', 'json')
+  .option('--debug-api', 'Log full API request/response payloads');
+
+// Hook to validate conflicting flags before command execution
+program.hook('preAction', (thisCommand) => {
+  const opts = thisCommand.opts();
+  if (opts.quiet && opts.verbose) {
+    console.error('error: Conflicting options: --quiet and --verbose cannot be used together');
+    process.exit(1);
+  }
+});
+
+// Register subcommands
+program.addCommand(require('../src/cli/commands/ingest'));
+program.addCommand(require('../src/cli/commands/query'));
+program.addCommand(require('../src/cli/commands/export'));
+program.addCommand(require('../src/cli/commands/system'));
+program.addCommand(require('../src/cli/commands/schema'));
+
+// Handle unknown commands
+program.on('command:*', (operands) => {
+  console.error(`error: unknown command '${operands[0]}'`);
+  console.error('Available commands: ingest, query, export, system');
+  process.exit(1);
+});
+
+// Parse and execute
+// Helper to ensure stdout is flushed
+// Helper to ensure stdout is flushed
+// Helper to ensure stdout is flushed
+// Helper to ensure stdout is flushed
+const flushAndExit = (code) => {
+  if (!process.stdout.isTTY) {
+    // Force a write to check buffer state
+    process.stdout.end(() => {
+      process.exit(code);
+    });
+  } else {
+    process.exit(code);
+  }
+};
+
+// Parse and execute
+program.parseAsync(process.argv)
+  .then(() => {
+    // Explicitly flush and exit
+    flushAndExit(0);
+  })
+  .catch((err) => {
+    console.error(err);
+    flushAndExit(1);
+  });
+
+// If no command provided, show help
+if (process.argv.length === 2) {
+  program.help();
+}

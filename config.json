@@ -1,0 +1,137 @@
+{
+  "port": 3000,
+  "supportedFileTypes": [
+    "image/jpeg",
+    "image/jpg"
+  ],
+  "uploadPath": "./uploads/",
+  "dataStorage": {
+    "resultsPath": "./data/results/",
+    "archivePath": "./data/archive/",
+    "tempPath": "./data/temp/",
+    "backupInterval": 86400000
+  },
+  "resultsPath": "./data/results.json",
+  "processingCompleteFlagPath": "./data/processing_complete.flag",
+  "logging": {
+    "level": "info",
+    "errorLogFile": "./logs/error.log",
+    "combinedLogFile": "./logs/combined.log",
+    "maxFiles": "14d",
+    "maxSize": "20m",
+    "verboseMode": false,
+    "payloadTruncation": {
+      "enabled": true,
+      "maxLength": 500
+    },
+    "samplingRate": {
+      "enabled": true,
+      "performanceMetrics": 0.1,
+      "payloadLogging": 0.05
+    }
+  },
+  "openAI": {
+    "model": "gpt-5.4",
+    "maxTokens": 4000,
+    "localCache": true,
+    "cacheExpiry": 604800000,
+    "reasoningEffort": null
+  },
+  "anthropic": {
+    "model": "claude-opus-4-6",
+    "maxTokens": 4000,
+    "localCache": true,
+    "cacheExpiry": 604800000
+  },
+  "gemini": {
+    "model": "gemini-3.1-pro-preview",
+    "maxTokens": 8000,
+    "localCache": true,
+    "cacheExpiry": 604800000
+  },
+  "mistral": {
+    "ocrModel": "mistral-ocr-latest",
+    "chatModel": "mistral-large-latest",
+    "maxTokens": 8000
+  },
+  "upload": {
+    "maxFileCount": 100,
+    "retryDelaySeconds": 3,
+    "maxRetryCount": 3,
+    "maxFileSize": "50mb",
+    "maxConcurrent": 3
+  },
+  "environment": "development",
+  "local": {
+    "autoLaunchBrowser": true,
+    "defaultBrowser": "chrome",
+    "saveLastSession": true,
+    "autoBackup": true
+  },
+  "burialRegister": {
+    "outputDir": "./data/burial_register",
+    "volumeId": "vol1",
+    "csv": {
+      "includeHeaders": true,
+      "encoding": "utf-8"
+    },
+    "apiTimeout": 90000
+  },
+  "database": {
+    "path": "./data/memorials.db"
+  },
+  "monumentCropping": {
+    "enabled": false,
+    "minWidth": 400,
+    "minHeight": 400,
+    "aspectRatioMin": 0.5,
+    "aspectRatioMax": 2.0
+  },
+  "graveCard": {
+    "stitchPadding": 20,
+    "minResolution": 1000,
+    "maxExportInterments": 8
+  },
+  "confidence": {
+    "enabled": true,
+    "autoAcceptThreshold": 0.90,
+    "reviewThreshold": 0.70,
+    "rejectThreshold": 0.50
+  },
+  "costs": {
+    "openai": {
+      "gpt-5.4": { "inputPerMToken": 2.50, "outputPerMToken": 20.00, "cachedInputPerMToken": 1.25 }
+    },
+    "anthropic": {
+      "claude-opus-4-6":   { "inputPerMToken": 5.00, "outputPerMToken": 25.00, "cacheWritePerMToken": 6.25, "cacheReadPerMToken": 0.50 },
+      "claude-sonnet-4-5": { "inputPerMToken": 3.00, "outputPerMToken": 15.00, "cacheWritePerMToken": 3.75, "cacheReadPerMToken": 0.30 },
+      "claude-haiku-4-5":  { "inputPerMToken": 1.00, "outputPerMToken":  5.00, "cacheWritePerMToken": 1.25, "cacheReadPerMToken": 0.10 }
+    },
+    "gemini": {
+      "gemini-3.1-pro-preview": { "inputPerMToken": 1.25, "outputPerMToken": 5.00 },
+      "gemini-2.5-flash": { "inputPerMToken": 0.075, "outputPerMToken": 0.30 }
+    },
+    "mistral": {
+      "mistral-large-latest": { "inputPerMToken": 2.00, "outputPerMToken": 6.00, "perPageCost": 0.002 }
+    },
+    "maxCostPerSession": 5.00
+  },
+  "retry": {
+    "maxProviderRetries": 3,
+    "validationRetries": 1,
+    "baseDelayMs": 1000,
+    "maxDelayMs": 10000,
+    "jitterMs": 1000
+  },
+  "audit": {
+    "enabled": true
+  },
+  "schemaConstrained": {
+    "enabled": false
+  },
+  "activeLearning": {
+    "enabled": true,
+    "disagreeThreshold": 0.5,
+    "langfuseEnabled": false
+  }
+}

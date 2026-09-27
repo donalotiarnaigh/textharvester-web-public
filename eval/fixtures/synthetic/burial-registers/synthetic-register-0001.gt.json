@@ -1,0 +1,81 @@
+{
+  "schema_version": "1.0.0",
+  "document_type": "burial_register",
+  "image_ref": "eval/source-images/burial-registers/SYNTHETIC-REGISTER-p001.jpg",
+  "annotator": "synthetic",
+  "annotation_date": "2026-09-27",
+  "blind_transcribed": false,
+  "difficulty": 1,
+  "annotator_notes": "Synthetic fixture — contains no real people. Entry 1 carries two deliberate corrections so the scorer exercises a non-perfect case.",
+  "extraction_provider": "synthetic",
+  "extraction_model": "fixture",
+  "page_level": {
+    "model_output": {
+      "parish_header_raw": "Example Parish",
+      "county_header_raw": "Example County",
+      "year_header_raw": "1900",
+      "page_marginalia_raw": null
+    },
+    "corrected": {
+      "parish_header_raw": "Example Parish",
+      "county_header_raw": "Example County",
+      "year_header_raw": "1900",
+      "page_marginalia_raw": null
+    },
+    "corrections_made": []
+  },
+  "entries": [
+    {
+      "row_index_on_page": 1,
+      "model_output": {
+        "entry_no_raw": "1",
+        "name_raw": "EXAMPLE PERSON",
+        "abode_raw": "Example Town",
+        "burial_date_raw": "Jany 1st 1900",
+        "age_raw": "40 years",
+        "officiant_raw": "Example Officiant",
+        "marginalia_raw": null,
+        "extra_notes_raw": null
+      },
+      "corrected": {
+        "entry_no_raw": "1",
+        "name_raw": "EXAMPLE PERSON",
+        "abode_raw": "Example Town",
+        "burial_date_raw": "Jany 1st 1900",
+        "age_raw": "40 years",
+        "officiant_raw": "Example Officiant",
+        "marginalia_raw": null,
+        "extra_notes_raw": null
+      },
+      "corrections_made": [],
+      "needs_review_model": false,
+      "needs_review_actual": false
+    },
+    {
+      "row_index_on_page": 2,
+      "model_output": {
+        "entry_no_raw": "2",
+        "name_raw": "TEST SUBJECT|Infant",
+        "abode_raw": "----",
+        "burial_date_raw": "Feby 9th 1900",
+        "age_raw": "6 months",
+        "officiant_raw": "Ceremonies were performed by ----",
+        "marginalia_raw": null,
+        "extra_notes_raw": null
+      },
+      "corrected": {
+        "entry_no_raw": "2",
+        "name_raw": "TEST SUBJECT|Infant",
+        "abode_raw": "Example Town",
+        "burial_date_raw": "Feby 9th 1900",
+        "age_raw": "6 months",
+        "officiant_raw": "Ceremonies were performed by Example Officiant",
+        "marginalia_raw": null,
+        "extra_notes_raw": null
+      },
+      "corrections_made": ["abode_raw", "officiant_raw"],
+      "needs_review_model": false,
+      "needs_review_actual": true
+    }
+  ]
+}

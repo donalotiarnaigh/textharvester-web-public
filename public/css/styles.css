@@ -1,0 +1,769 @@
+/* Global Styles */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Source Type Badge Styles */
+.source-type-cell {
+  white-space: nowrap;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.source-type-cell .badge {
+  font-size: 0.75rem;
+  padding: 0.375rem 0.5rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.badge-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.badge-success {
+  background-color: #28a745;
+  color: white;
+}
+
+.badge-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.badge-warning {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+/* Confidence score colour helpers */
+.confidence-high { color: #28a745; font-weight: 600; }
+.confidence-medium { color: #ffc107; font-weight: 600; }
+.confidence-low { color: #dc3545; font-weight: 600; }
+.confidence-unknown { color: #6c757d; font-style: italic; }
+
+/* Content Wrapper */
+.content-wrap {
+  display: flex;
+  flex-direction: column;
+  /* Ensures elements are stacked vertically */
+  justify-content: flex-start;
+  /* Aligns content at the top */
+  align-items: center;
+  /* Centers content horizontally */
+  min-height: calc(100vh - 70px);
+  /* Adjust to allow content to be higher up */
+  padding-top: 20px;
+  /* Optional padding to position content higher */
+  padding-bottom: 20px;
+  /* Ensures enough space for the footer */
+}
+
+/* Adjusted Content Wrapper for Processing Page */
+.processing-content-wrap {
+  justify-content: center;
+  height: calc(100vh - 100px);
+  padding: 0 15px;
+}
+
+/* Content Wrapper for Results Page */
+.results-content-wrap {
+  min-height: calc(100vh - 120px);
+  /* Account for nav and footer */
+  padding: 15px;
+  /* Improved spacing around content */
+}
+
+/* Parent Container */
+.parent-container {
+  width: 50%;
+}
+
+/* Footer */
+.footer {
+  background-color: #f8f9fa;
+  color: black;
+  text-align: center;
+  padding: 30px 0;
+  font-size: 0.85em;
+  width: 100%;
+  position: sticky;
+  /* Makes the footer stick to the bottom of the viewport */
+  bottom: 0;
+  /* Ensures it stays at the bottom */
+  z-index: 10;
+  /* Keeps it above other elements if necessary */
+}
+
+/* Footer Adjustment for Processing Page */
+.processing-footer {
+  padding: 20px 0;
+  position: absolute;
+  bottom: 0;
+}
+
+/* Footer Adjustment for Results Page */
+.results-footer {
+  clear: both;
+  position: relative;
+  padding: 20px 0;
+}
+
+/* Dropzone */
+.dropzone {
+  border: 2px dashed #007bff;
+  padding: 20px;
+  text-align: center;
+  background-color: #f8f9fa;
+  display: flex;
+  /* Enables centering with flexbox */
+  justify-content: center;
+  /* Centers content horizontally */
+  align-items: center;
+  flex-wrap: wrap;
+  /* Centers content vertically */
+  min-height: 200px;
+  /* Ensures the drop zone has a minimum height */
+  margin: auto;
+  /* Centers the drop zone within its container */
+}
+
+.dropzone.active {
+  border-color: #0056b3;
+  background-color: #e9ecef;
+}
+
+/* Loading and Processing Messages */
+.loading-container,
+.processing-message {
+  text-align: center;
+  padding: 0 10px;
+}
+
+/* Loading Animation */
+.loading {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba(195, 195, 195, 0.6);
+  border-radius: 50%;
+  border-top-color: #636767;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Progress Bar */
+.progress-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.progress {
+  background-color: #f0f0f0;
+  border-radius: 12px;
+  height: 24px;
+  margin: 1.5rem 0;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-bar {
+  background-color: #007bff;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: width 0.5s ease;
+  min-width: fit-content;
+  padding: 0 8px;
+}
+
+/* Progress Text Elements */
+#modelDisplay {
+  color: #2c3e50;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+#statusMessage {
+  color: #6c757d;
+  font-size: 1.1rem;
+  margin: 1rem 0;
+  text-align: center;
+}
+
+#fileProgress {
+  color: #6c757d;
+  font-size: 0.9rem;
+  text-align: center;
+  display: block;
+  margin-top: 0.5rem;
+}
+
+/* Info Message for Results Page */
+.info-message {
+  background-color: #e9f7f8;
+  /* Light blue background */
+  color: #007bff;
+  /* Blue text */
+  padding: 10px;
+  /* Padding for better spacing */
+  border-radius: 5px;
+  /* Slight border radius for aesthetics */
+}
+
+/* Container Padding for Results Page */
+.container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+/* Results Section for Results Page */
+.results-section {
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* Code Block for Results Page */
+.code-block {
+  text-align: left;
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  padding: 15px;
+  /* Reduced padding for smaller screens */
+  border-radius: 5px;
+  margin-top: 20px;
+  overflow-x: auto;
+  /* Ensure code block scrolls horizontally */
+  position: relative;
+}
+
+/* Button Spacing */
+button {
+  margin: 10px 0;
+  /* Ensure adequate spacing around buttons */
+  padding: 10px 15px;
+  /* Larger touch targets */
+}
+
+/* Copy Button for Results Page */
+#copyButton {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 100;
+  /* Ensure it's clickable above other content */
+}
+
+/* Responsive Styles */
+@media (max-width: 991px) {
+  .navbar-nav {
+    text-align: center;
+  }
+
+  .footer {
+    font-size: 0.8em;
+  }
+
+  .content-wrap {
+    height: auto;
+    min-height: calc(100vh - 100px);
+    padding-bottom: 60px;
+  }
+}
+
+@media (max-width: 576px) {
+
+  .navbar-nav,
+  .footer {
+    text-align: center;
+  }
+
+  .footer {
+    padding: 15px 5px;
+    font-size: 0.8em;
+    /* Even smaller font for very small devices */
+  }
+
+  .container,
+  .navbar-brand,
+  .nav-link,
+  .footer a {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  .code-block {
+    font-size: 0.9em;
+    /* Ensure code is readable without being too small */
+  }
+}
+
+@media (min-width: 992px) {
+  .processing-card {
+    max-width: 600px;
+  }
+
+  .progress {
+    width: 100%;
+  }
+}
+
+/* Card Styles */
+.card {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: none;
+  margin-bottom: 1.5rem;
+}
+
+.card-title {
+  color: #2c3e50;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+/* Instructions Card */
+.instructions {
+  background-color: #f8f9fa;
+}
+
+.instructions .card-body {
+  padding: 1.5rem;
+}
+
+/* Model Selection Styles */
+.model-selection-card {
+  background-color: #ffffff;
+}
+
+.model-selection-card .card-body {
+  padding: 1.25rem;
+}
+
+#modelSelect {
+  border: 1px solid #ced4da;
+  border-radius: 0.375rem;
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+.model-info {
+  color: #6c757d;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  display: block;
+  line-height: 1.4;
+}
+
+/* Processing Card Styles */
+.processing-card {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.processing-card .card-body {
+  padding: 1.5rem;
+}
+
+.processing-status {
+  width: 100%;
+  padding: 0;
+}
+
+/* Cancel Processing Button */
+#cancelProcessingButton {
+  display: block;
+  margin: 0 auto;
+  min-width: 150px;
+}
+
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+}
+
+/* Results Table Styles */
+#resultsTable {
+  font-size: 0.9rem;
+  table-layout: auto;
+  width: 100%;
+}
+
+#resultsTable th,
+#resultsTable td {
+  padding: 0.5rem 0.4rem;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+#resultsTable td:nth-child(3),
+#resultsTable td:nth-child(7) {
+  white-space: normal;
+  min-width: 100px;
+}
+
+#resultsTable th {
+  background-color: #f8f9fa;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  font-size: 0.85rem;
+}
+
+/* Model Badge Styles */
+.badge-primary {
+  background-color: #007bff;
+}
+
+.badge-info {
+  background-color: #17a2b8;
+}
+
+.badge-secondary {
+  background-color: #6c757d;
+}
+
+/* Expandable Rows Styles */
+.memorial-row {
+  transition: background-color 0.2s ease;
+}
+
+.memorial-row:hover {
+  background-color: #f8f9fa;
+}
+
+.memorial-row.table-active {
+  background-color: #e9ecef !important;
+}
+
+.detail-row {
+  background-color: #f8f9fa;
+  border-left: 3px solid #007bff;
+}
+
+.detail-row td {
+  padding: 0 !important;
+}
+
+.detail-content {
+  background: white;
+  border-radius: 0.25rem;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.detail-content h5 {
+  color: #495057;
+  border-bottom: 2px solid #dee2e6;
+  padding-bottom: 0.5rem;
+}
+
+.detail-content .card {
+  border: 1px solid #dee2e6;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.detail-content .card-header {
+  font-weight: 600;
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.inscription-text {
+  font-size: 1rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  color: #495057;
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 0.25rem;
+  margin: 0;
+}
+
+.detail-info h6 {
+  color: #495057;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.detail-info dl {
+  margin-bottom: 0;
+}
+
+.detail-info dt {
+  font-weight: 600;
+  color: #6c757d;
+}
+
+.detail-info dd {
+  color: #495057;
+  margin-bottom: 0.5rem;
+}
+
+.expand-toggle {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.expand-toggle:hover {
+  transform: scale(1.1);
+}
+
+.expand-toggle i {
+  transition: transform 0.2s ease;
+}
+
+/* Copy button feedback */
+.copy-inscription {
+  transition: all 0.3s ease;
+}
+
+/* Filter Controls */
+.filter-controls {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+}
+
+.filter-controls .form-group {
+  margin-bottom: 0.5rem;
+}
+
+.filter-controls label {
+  font-weight: 600;
+  color: #495057;
+  font-size: 0.9rem;
+}
+
+.filter-controls .form-control {
+  font-size: 0.9rem;
+}
+
+#clearFilters {
+  font-size: 0.9rem;
+}
+
+/* Sortable Headers */
+.sortable {
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  padding-right: 1.5rem;
+}
+
+.sortable:hover {
+  background-color: #e9ecef;
+}
+
+.sortable i {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6c757d;
+  font-size: 0.8rem;
+}
+
+.sortable i.fa-sort-up,
+.sortable i.fa-sort-down {
+  color: #007bff;
+}
+
+/* Count Display */
+#visibleCount,
+#totalCount {
+  font-weight: 600;
+  color: #007bff;
+}
+
+/* Expand/Collapse All Buttons */
+#expandAll,
+#collapseAll {
+  font-size: 0.85rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .detail-content .row {
+    margin: 0;
+  }
+
+  .detail-content .col-md-6 {
+    margin-bottom: 1rem;
+  }
+
+  .detail-info dl.row dt {
+    text-align: left;
+  }
+
+  .filter-controls .col-md-4,
+  .filter-controls .col-md-3,
+  .filter-controls .col-md-2 {
+    margin-bottom: 1rem;
+  }
+
+  .sortable {
+    font-size: 0.85rem;
+    padding-right: 1.2rem;
+  }
+
+  .sortable i {
+    font-size: 0.7rem;
+  }
+}
+
+/* Tooltip Enhancements */
+.tooltip {
+  font-size: 0.875rem;
+}
+
+.tooltip-inner {
+  max-width: 250px;
+  padding: 0.5rem 1rem;
+  text-align: left;
+}
+
+/* Results Table Metadata Columns */
+#resultsTable td[data-toggle="tooltip"] {
+  cursor: help;
+  border-bottom: 1px dotted #007bff;
+}
+
+#resultsTable .badge {
+  font-size: 0.85rem;
+  padding: 0.4em 0.6em;
+}
+
+/* Modal Enhancements */
+.modal-body p strong {
+  color: #495057;
+  min-width: 100px;
+  display: inline-block;
+}
+
+.modal-body .row p {
+  margin-bottom: 0.5rem;
+}
+
+/* Edit Record Button Styles */
+.edit-record {
+  transition: all 0.3s ease;
+}
+
+.edit-record:hover {
+  background-color: #0056b3 !important;
+}
+
+.edit-record:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.mark-reviewed {
+  transition: all 0.3s ease;
+}
+
+.mark-reviewed:hover {
+  background-color: #cc9e00 !important;
+  color: #212529;
+}
+
+.mark-reviewed:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Inline Edit Form Styles */
+.inline-edit-form {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 0.375rem;
+  border-left: 3px solid #007bff;
+}
+
+.inline-edit-form .form-group {
+  margin-bottom: 1rem;
+}
+
+.inline-edit-form .form-control-sm {
+  font-size: 0.875rem;
+}
+
+.inline-edit-form textarea.form-control-sm {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.inline-edit-form label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #495057;
+}
+
+.inline-edit-form .btn {
+  font-size: 0.85rem;
+}
+
+.inline-edit-save {
+  transition: all 0.3s ease;
+}
+
+.inline-edit-save:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.inline-edit-cancel {
+  transition: all 0.3s ease;
+}
+
+.inline-edit-error {
+  font-size: 0.85rem;
+  padding: 0.5rem 0.75rem;
+}
+
+.alert-sm {
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.5rem;
+}

@@ -1,0 +1,36 @@
+# gitleaks configuration.
+#
+# The default rule set is kept in full. The allowlist below exists only because
+# this repository's test suite deliberately contains fake credentials — several
+# tests assert that a key is never echoed into a response or a log, so the
+# fixtures have to look like keys.
+#
+# Keep this list narrow. Allowing a whole directory (for example `__tests__/**`)
+# would also hide a real credential pasted into a test file, which is exactly
+# the kind of mistake this gate exists to catch.
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Synthetic credentials used by the test suite and documentation placeholders"
+regexTarget = "match"
+regexes = [
+  '''sk-secret-key-12345''',
+  '''sk-super-secret-12345''',
+  '''sk-ant-secret-67890''',
+  '''sk-ant-test-key''',
+  '''sk-test-key''',
+  '''sk-test''',
+  '''sk-12345''',
+  '''AIza-test-key''',
+  # Documentation placeholders, not credentials.
+  '''sk-proj-\.\.\.''',
+  '''sk-ant-\.\.\.''',
+  '''AIzaSy\.\.\.''',
+]
+paths = [
+  '''\.env\.example$''',
+  '''^docs/AUDIT_LOGGING_E2E_TEST\.md$''',
+  '''^scripts/test-audit-logging-e2e\.js$''',
+]
